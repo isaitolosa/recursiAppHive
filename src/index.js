@@ -35,9 +35,11 @@ function jsonToExcel(
   } else if (crearPagina === "seleccionar") {
     sheet = workbook.getWorksheet(abuelo);
   }
+
   for (var collection in objeto) {
     if (typeof objeto[collection] !== "object") {
       sheet = workbook.getWorksheet(abuelo);
+
       console.log(
         "Los valores son: " +
           collection +
@@ -47,6 +49,12 @@ function jsonToExcel(
           abuelo +
           "."
       );
+      sheet.addRow([3, "Sam", new Date()]);
+      let fila = sheet.getRow(1);
+      fila.eachCell(function (cell, columnNumber) {
+        console.log("Celda: " + cell + ". NumColumna: " + columnNumber);
+      });
+      console.log();
     } else {
       if (level === 1) {
         jsonToExcel(
