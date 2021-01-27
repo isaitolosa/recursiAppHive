@@ -36,6 +36,7 @@ function jsonToExcel(
     sheet = workbook.getWorksheet(abuelo);
   }
 
+  let filaAinsertar = 2;
   for (var collection in objeto) {
     if (typeof objeto[collection] !== "object") {
       sheet = workbook.getWorksheet(abuelo);
@@ -77,13 +78,20 @@ function jsonToExcel(
 
         //Buscar nombre de columna en la fila y sacar su posicion
 
-        let numeroCol = fila.eachCell((cel, rowNum) => {
+        let numeroCol;
+        fila.eachCell(function (cel, rowNum) {
           if (cel.text === collection) {
-            return (numeroCol = rowNum);
+            numeroCol = rowNum;
           }
         });
-
         console.log(numeroCol);
+
+        //Insertar id
+        cell = sheet.getCell(filaAinsertar, 1);
+        cell.value = padre;
+        //Insertar celda
+        cell = sheet.getCell(filaAinsertar, numeroCol);
+        cell.value = objeto[collection];
       } else {
         //Es hoja anidada
         let fila = sheet.getRow(1);
@@ -138,5 +146,7 @@ function jsonToExcel(
   console.log("TERMINAMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOS");
   reiniciarLevel = "no";
 }
+
+workbook.xlsx.writeFile(__dirname + "public/Generado/test.xlsx");
 
 jsonToExcel(archivoJSON, "", "", 0, "", "", "no");
