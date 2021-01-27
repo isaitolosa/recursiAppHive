@@ -1,7 +1,10 @@
 const fs = require("fs");
 const ExcelJS = require("exceljs");
+const excelToJson = require("convert-excel-to-json");
 
-let archivoRAW = fs.readFileSync(__dirname + "/pruebas/jsonGigante.json");
+let archivoRAW = fs.readFileSync(
+  __dirname + "/pruebas/bruumi-eats-data-export.json"
+);
 let archivoJSON = JSON.parse(archivoRAW);
 const workbook = new ExcelJS.Workbook();
 workbook.creator = "IsaiT";
