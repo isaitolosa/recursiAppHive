@@ -8,6 +8,7 @@ workbook.creator = "IsaiT";
 workbook.created = new Date();
 workbook.calcProperties.fullCalcOnLoad = true;
 let sheet;
+let encabezados = [];
 
 function jsonToExcel(
   objeto,
@@ -56,13 +57,11 @@ function jsonToExcel(
       if (esPrinOsec === -1) {
         //Es hoja principal
         let fila = sheet.getRow(1);
-        let encabezados = [];
+
         let celda;
         encabezados = fila.values;
-        console.log(encabezados);
-        if (fila == null || !fila.values || !fila.values.length) {
-          celda = sheet.getCell(1, 2);
-          celda.value = collection;
+        fila = sheet.getRow(1);
+        if (fila === null || !fila.values || !fila.values.length) {
           encabezados.push("");
           encabezados.push(collection);
         } else {
@@ -71,9 +70,10 @@ function jsonToExcel(
           }
         }
 
-        sheet.insertRow(1, encabezados);
+        fila.values = encabezados;
         fila = sheet.getRow(1);
         console.log(fila.values);
+
         //console.log(fila.values);
 
         //Buscar nombre de columna en la fila y sacar su posicion
@@ -85,22 +85,50 @@ function jsonToExcel(
           }
         });
         console.log(numeroCol);
-        let last = sheet.lastRow.number;
-        console.log(last);
-        console.log();
+        fila = sheet.getRow(1);
 
+        let last = sheet.getColumn(1);
+        let ultimaFila;
+        last.eachCell(function (cel, rowNum) {
+          ultimaFila = rowNum;
+        });
+
+        let filaTemp;
+        console.log(sheet.getRow(1).values);
+        console.log(sheet.getRow(2).values);
+        console.log(sheet.getRow(3).values);
+        console.log(sheet.getRow(4).values);
+
+        if (ultimaFila === 1) {
+          ultimaFila = ultimaFila + 1;
+          filaTemp = sheet.getRow(ultimaFila).values;
+        } else {
+          filaTemp = sheet.getRow(ultimaFila).values[1];
+        }
+        console.log(filaTemp);
+        if (filaTemp !== padre) {
+          ultimaFila = ultimaFila + 1;
+        }
+
+        fila = sheet.getRow(1);
         //Insertar id
-        cell = sheet.getCell(1, numeroCol);
+        cell = sheet.getCell(ultimaFila, 1);
         cell.value = padre;
-        console.log(
-          "La el encabezado: " + collection + " va en:" + cell.address
-        );
+        console.log("El ID: " + collection + " va en:" + cell.address);
+
+        fila = sheet.getRow(1);
         //Insertar celda
-        cell = sheet.getCell(filaInser, numeroCol);
+        cell = sheet.getCell(ultimaFila, numeroCol);
         cell.value = objeto[collection];
+
+        fila = sheet.getRow(1);
+
         console.log(
           "La collection: " + objeto[collection] + " va en:" + cell.address
         );
+
+        fila = sheet.getRow(1);
+        console.log("________________________________________________________");
 
         cell = null;
       } else {
@@ -118,8 +146,6 @@ function jsonToExcel(
           }
         }
       }
-
-      console.log();
     } else {
       if (level === 1) {
         jsonToExcel(
