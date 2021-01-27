@@ -16,7 +16,8 @@ function jsonToExcel(
   level,
   crearPagina,
   bisAbuelo,
-  reiniciarLevel
+  reiniciarLevel,
+  filaInser
 ) {
   console.log("Se llamo la funcion_____________________________");
   if (reiniciarLevel === "si") {
@@ -36,7 +37,6 @@ function jsonToExcel(
     sheet = workbook.getWorksheet(abuelo);
   }
 
-  let filaAinsertar = 2;
   for (var collection in objeto) {
     if (typeof objeto[collection] !== "object") {
       sheet = workbook.getWorksheet(abuelo);
@@ -87,10 +87,10 @@ function jsonToExcel(
         console.log(numeroCol);
 
         //Insertar id
-        cell = sheet.getCell(filaAinsertar, 1);
+        cell = sheet.getCell(filaInser, 1);
         cell.value = padre;
         //Insertar celda
-        cell = sheet.getCell(filaAinsertar, numeroCol);
+        cell = sheet.getCell(filaInser, numeroCol);
         cell.value = objeto[collection];
       } else {
         //Es hoja anidada
@@ -118,7 +118,8 @@ function jsonToExcel(
           level,
           "crear",
           bisAbuelo,
-          "no"
+          "no",
+          filaInser
         );
       } else if (level === 2) {
         jsonToExcel(
@@ -128,7 +129,8 @@ function jsonToExcel(
           level,
           "seleccionar",
           bisAbuelo,
-          "no"
+          "no",
+          filaInser + 1
         );
       } else if (level === 3) {
         jsonToExcel(
@@ -138,7 +140,8 @@ function jsonToExcel(
           level,
           "crear",
           padre,
-          "si"
+          "si",
+          filaInser
         );
       }
     }
@@ -147,6 +150,6 @@ function jsonToExcel(
   reiniciarLevel = "no";
 }
 
-workbook.xlsx.writeFile(__dirname + "public/Generado/test.xlsx");
+jsonToExcel(archivoJSON, "", "", 0, "", "", "no", 1);
 
-jsonToExcel(archivoJSON, "", "", 0, "", "", "no");
+workbook.xlsx.writeFile(__dirname + "/public/Generado/test.xlsx");
