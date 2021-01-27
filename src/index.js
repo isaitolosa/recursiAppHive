@@ -234,9 +234,15 @@ function ExcelTojson() {
 
   function devuelveObjeto(params) {}
 
+  function funcionRecursi(objeto) {
+    for (var pag in objeto) {
+      console.log(objeto[pag]);
+    }
+  }
+
+  //____________________________________________________________________________
   let collectionAnterior = "";
   let objetoAmandar = [];
-
   for (var pagina in result) {
     //pagina da el nombre de la página en excel
     if (collectionAnterior === "") {
@@ -246,18 +252,35 @@ function ExcelTojson() {
     let separaCollections = pagina.split("-");
     if (separaCollections.length === 1) {
       if (collectionAnterior !== pagina) {
-        //no es igual, hacer el reset de variables
+        //no es igual, hacer el reset de variables, analizar cuando la ultima página es principal(collection)
+        //1: llama la función para insertar lo que esta en el objetoAmandar
+        funcionRecursi(objetoAmandar);
+        //2: inserta la pagina(collection) actual a la bd
+
+        //3: borrar la información que está en objetoAmandar = []
+        objetoAmandar = [];
       } else {
+        //insertar primera pagina en db
       }
     } else {
       //console.log(pagina + ":{" + result[pagina] + "}");
+      let paraVer = result[pagina];
+      //console.log();
       let cadena = '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
       let objeto = JSON.parse(cadena);
       objetoAmandar.push(objeto);
-      console.log(objetoAmandar);
+      //console.log(objetoAmandar);
     }
     collectionAnterior = pagina;
   }
+
+  //Checamos si el objetoAmandar no esta vacío, llamar a la funcion una ultima vez
+  if (Object.keys(objetoAmandar).length !== 0) {
+    funcionRecursi(objetoAmandar);
+    objetoAmandar = [];
+  }
+
+  //__________________________________________________________________________
 
   //console.log(result);
   //console.log(typeof Object.keys(result));
