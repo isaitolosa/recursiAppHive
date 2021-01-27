@@ -61,15 +61,22 @@ function jsonToExcel(
           celda = sheet.getCell(1, 2);
           celda.value = collection;
         } else {
-          for (let i = 1; i < fila.values.length; i++) {
-            let cell = fila.getCell(i).value;
-            if (!encabezados.includes(cell)) {
-              encabezados.push(cell);
-            }
+          if (!encabezados.includes(collection)) {
+            encabezados.push(collection);
           }
+
           fila = sheet.getRow(1);
           console.log(encabezados);
-          console.log(fila.values);
+          //console.log(fila.values);
+
+          //Buscar nombre de columna en la fila y sacar su posicion
+
+          let numeroCol = fila.eachCell((cel, number) => {
+            if (cel === collection) {
+              return number;
+            }
+          });
+          console.log(numeroCol);
         }
       } else {
         //Es hoja anidada
