@@ -57,27 +57,33 @@ function jsonToExcel(
         let fila = sheet.getRow(1);
         let encabezados = [];
         let celda;
+        encabezados = fila.values;
+        console.log(encabezados);
         if (fila == null || !fila.values || !fila.values.length) {
           celda = sheet.getCell(1, 2);
           celda.value = collection;
+          encabezados.push("");
+          encabezados.push(collection);
         } else {
           if (!encabezados.includes(collection)) {
             encabezados.push(collection);
           }
-
-          fila = sheet.getRow(1);
-          console.log(encabezados);
-          //console.log(fila.values);
-
-          //Buscar nombre de columna en la fila y sacar su posicion
-
-          let numeroCol = fila.eachCell((cel, number) => {
-            if (cel === collection) {
-              return number;
-            }
-          });
-          console.log(numeroCol);
         }
+
+        sheet.insertRow(1, encabezados);
+        fila = sheet.getRow(1);
+        console.log(fila.values);
+        //console.log(fila.values);
+
+        //Buscar nombre de columna en la fila y sacar su posicion
+
+        let numeroCol = fila.eachCell((cel, rowNum) => {
+          if (cel.text === collection) {
+            return (numeroCol = rowNum);
+          }
+        });
+
+        console.log(numeroCol);
       } else {
         //Es hoja anidada
         let fila = sheet.getRow(1);
