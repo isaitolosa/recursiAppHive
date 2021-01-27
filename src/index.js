@@ -62,10 +62,14 @@ function jsonToExcel(
           celda.value = collection;
         } else {
           for (let i = 1; i < fila.values.length; i++) {
-            let cell = fila.getCell(i);
-            encabezados.push(cell);
+            let cell = fila.getCell(i).value;
+            if (!encabezados.includes(cell)) {
+              encabezados.push(cell);
+            }
           }
           fila = sheet.getRow(1);
+          console.log(encabezados);
+          console.log(fila.values);
         }
       } else {
         //Es hoja anidada
@@ -77,7 +81,7 @@ function jsonToExcel(
           celda.value = collection;
         } else {
           for (let i = 1; i < fila.values.length; i++) {
-            let cell = fila.getCell(i);
+            let cell = fila.getCell(i).text;
             encabezados.push(cell);
           }
         }
