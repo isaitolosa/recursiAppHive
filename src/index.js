@@ -232,14 +232,27 @@ function ExcelTojson() {
     sourceFile: __dirname + "/public/Generado/test.xlsx",
   });
 
+  function devuelveObjeto(params) {}
+
+  let padre, hijo, hijoTres;
+  let padreArr, hijoArr, hijoTresArr;
+
   for (var pagina in result) {
     //pagina da el nombre de la página en excel
+    let separaCollections = pagina.split("-");
+    if (separaCollections.length === 1) {
+      //Es una collection principal, insertar directamente a la bd
+      console.log(result[pagina]);
+      padre = pagina;
+    } else if (separaCollections.length === 2) {
+    } else if (separaCollections.length >= 3) {
+    }
   }
 
   //db.push("/" + pagina, result[pagina], false);
   //db.delete("/");
   var data = db.getData("/");
-  console.log(data);
+  //console.log(data);
 }
 
-//ExcelTojson();
+ExcelTojson();
