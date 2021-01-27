@@ -242,11 +242,19 @@ function ExcelTojson() {
     let paginaAnterior = "asdf#$%&nada....";
 
     for (var pag in getObjeto) {
-      //console.log(pag.search(paginaAnterior));
       for (var nombrePag in getObjeto[pag]) {
         console.log(nombrePag.search(paginaAnterior));
-        console.log(getObjeto[pag][nombrePag]);
+        //console.log(getObjeto[pag][nombrePag]);
+        console.log(nombrePag);
+        if (paginaAnterior === "asdf#$%&nada....") {
+          arreglo.push(getObjeto[pag][nombrePag]);
+        } else if (nombrePag.search(paginaAnterior)) {
+          arreglo.push(getObjeto[pag][nombrePag]);
+        } else {
+        }
       }
+      paginaAnterior = nombrePag;
+      console.log();
     }
   }
 
@@ -287,7 +295,7 @@ function ExcelTojson() {
 
   //Checamos si el objetoAmandar no esta vacío, llamar a la funcion una ultima vez
   if (Object.keys(objetoAmandar).length !== 0) {
-    funcionRecursi(collectionAnterior, objetoAmandar);
+    funcionRecursi("", objetoAmandar);
     objetoAmandar = [];
   }
 
