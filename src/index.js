@@ -235,7 +235,7 @@ function ExcelTojson() {
   function devuelveObjeto(params) {}
 
   let collectionAnterior = "";
-  let objetoAmandar;
+  let objetoAmandar = [];
 
   for (var pagina in result) {
     //pagina da el nombre de la página en excel
@@ -247,11 +247,18 @@ function ExcelTojson() {
     if (separaCollections.length === 1) {
       if (collectionAnterior !== pagina) {
         //no es igual, hacer el reset de variables
+      } else {
       }
     } else {
+      //console.log(pagina + ":{" + result[pagina] + "}");
+      let cadena = '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
+      let objeto = JSON.parse(cadena);
+      objetoAmandar.push(objeto);
+      console.log(objetoAmandar);
     }
     collectionAnterior = pagina;
   }
+
   //console.log(result);
   //console.log(typeof Object.keys(result));
   ///console.log(Object.keys(result).length);
