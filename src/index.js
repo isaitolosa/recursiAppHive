@@ -230,20 +230,16 @@ var db = new JsonDB(new Config("miBD", true, false, "/"));
 function ExcelTojson() {
   const result = excelToJson({
     sourceFile: __dirname + "/public/Generado/test.xlsx",
-    columnToKey: {
-      "*": "{{columnHeader}}",
-    },
   });
 
   for (var pagina in result) {
-    //console.log("El tipo es: " + typeof result[pagina]);
-    console.log(result[pagina]);
-    //db.push("/" + pagina, result[pagina], false);
+    //pagina da el nombre de la página en excel
   }
 
-  db.delete("/");
+  //db.push("/" + pagina, result[pagina], false);
+  //db.delete("/");
   var data = db.getData("/");
   console.log(data);
 }
 
-ExcelTojson();
+//ExcelTojson();
