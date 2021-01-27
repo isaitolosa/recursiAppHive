@@ -49,19 +49,40 @@ function jsonToExcel(
           abuelo +
           "."
       );
-      sheet.addRow([3, "Sam", new Date()]);
-      let fila = sheet.getRow(1);
-      let encabezados = [];
-      if (fila == null || !fila.values || !fila.values.length) {
+      //sheet.addRow([3, "Sam", new Date()]);
+
+      let esPrinOsec = abuelo.search(":");
+      if (esPrinOsec === -1) {
+        //Es hoja principal
+        let fila = sheet.getRow(1);
+        let encabezados = [];
+        let celda;
+        if (fila == null || !fila.values || !fila.values.length) {
+          celda = sheet.getCell(1, 2);
+          celda.value = collection;
+        } else {
+          for (let i = 1; i < fila.values.length; i++) {
+            let cell = fila.getCell(i);
+            encabezados.push(cell);
+          }
+          fila = sheet.getRow(1);
+        }
       } else {
-        //for (let i = 1; i < fila.values.length; i++) {
-        //let cell = fila.getCell(i)
-        console.log(fila.values.length);
-        //}
+        //Es hoja anidada
+        let fila = sheet.getRow(1);
+        let encabezados = [];
+        let celda;
+        if (fila == null || !fila.values || !fila.values.length) {
+          celda = sheet.getCell(1, 3);
+          celda.value = collection;
+        } else {
+          for (let i = 1; i < fila.values.length; i++) {
+            let cell = fila.getCell(i);
+            encabezados.push(cell);
+          }
+        }
       }
-      fila.eachCell(function (cell, columnNumber) {
-        console.log("Celda: " + cell + ". NumColumna: " + columnNumber);
-      });
+
       console.log();
     } else {
       if (level === 1) {
