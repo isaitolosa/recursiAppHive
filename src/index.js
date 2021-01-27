@@ -232,11 +232,21 @@ function ExcelTojson() {
     sourceFile: __dirname + "/public/Generado/test.xlsx",
   });
 
-  function devuelveObjeto(params) {}
+  function insertaEnbd(path, objeto) {
+    //console.log(path);
+    //console.log(objeto);
+  }
 
-  function funcionRecursi(objeto) {
-    for (var pag in objeto) {
-      console.log(objeto[pag]);
+  function funcionRecursi(path, getObjeto) {
+    let arreglo = [];
+    let paginaAnterior = "asdf#$%&nada....";
+
+    for (var pag in getObjeto) {
+      //console.log(pag.search(paginaAnterior));
+      for (var nombrePag in getObjeto[pag]) {
+        console.log(nombrePag.search(paginaAnterior));
+        console.log(getObjeto[pag][nombrePag]);
+      }
     }
   }
 
@@ -254,13 +264,14 @@ function ExcelTojson() {
       if (collectionAnterior !== pagina) {
         //no es igual, hacer el reset de variables, analizar cuando la ultima página es principal(collection)
         //1: llama la función para insertar lo que esta en el objetoAmandar
-        funcionRecursi(objetoAmandar);
+        funcionRecursi("", objetoAmandar);
         //2: inserta la pagina(collection) actual a la bd
-
+        insertaEnbd(pagina, result[pagina]);
         //3: borrar la información que está en objetoAmandar = []
         objetoAmandar = [];
       } else {
         //insertar primera pagina en db
+        insertaEnbd(pagina, result[pagina]);
       }
     } else {
       //console.log(pagina + ":{" + result[pagina] + "}");
@@ -276,7 +287,7 @@ function ExcelTojson() {
 
   //Checamos si el objetoAmandar no esta vacío, llamar a la funcion una ultima vez
   if (Object.keys(objetoAmandar).length !== 0) {
-    funcionRecursi(objetoAmandar);
+    funcionRecursi(collectionAnterior, objetoAmandar);
     objetoAmandar = [];
   }
 
