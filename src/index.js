@@ -51,6 +51,14 @@ function jsonToExcel(
       );
       sheet.addRow([3, "Sam", new Date()]);
       let fila = sheet.getRow(1);
+      let encabezados = [];
+      if (fila == null || !fila.values || !fila.values.length) {
+      } else {
+        //for (let i = 1; i < fila.values.length; i++) {
+        //let cell = fila.getCell(i)
+        console.log(fila.values.length);
+        //}
+      }
       fila.eachCell(function (cell, columnNumber) {
         console.log("Celda: " + cell + ". NumColumna: " + columnNumber);
       });
