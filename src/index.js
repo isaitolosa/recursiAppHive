@@ -52,7 +52,7 @@ function jsonToExcel(
       );
       //sheet.addRow([3, "Sam", new Date()]);
 
-      let esPrinOsec = abuelo.search(":");
+      let esPrinOsec = abuelo.search("-");
       if (esPrinOsec === -1) {
         //Es hoja principal
         let fila = sheet.getRow(1);
@@ -85,13 +85,24 @@ function jsonToExcel(
           }
         });
         console.log(numeroCol);
+        let last = sheet.lastRow.number;
+        console.log(last);
+        console.log();
 
         //Insertar id
-        cell = sheet.getCell(filaInser, 1);
+        cell = sheet.getCell(1, numeroCol);
         cell.value = padre;
+        console.log(
+          "La el encabezado: " + collection + " va en:" + cell.address
+        );
         //Insertar celda
         cell = sheet.getCell(filaInser, numeroCol);
         cell.value = objeto[collection];
+        console.log(
+          "La collection: " + objeto[collection] + " va en:" + cell.address
+        );
+
+        cell = null;
       } else {
         //Es hoja anidada
         let fila = sheet.getRow(1);
@@ -141,7 +152,7 @@ function jsonToExcel(
           "crear",
           padre,
           "si",
-          filaInser
+          (filaInser = 1)
         );
       }
     }
