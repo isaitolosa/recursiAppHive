@@ -234,20 +234,27 @@ function ExcelTojson() {
 
   function devuelveObjeto(params) {}
 
-  let padre, hijo, hijoTres;
-  let padreArr, hijoArr, hijoTresArr;
+  let collectionAnterior = "";
+  let objetoAmandar;
 
   for (var pagina in result) {
     //pagina da el nombre de la página en excel
+    if (collectionAnterior === "") {
+      collectionAnterior = pagina;
+    }
+
     let separaCollections = pagina.split("-");
     if (separaCollections.length === 1) {
-      //Es una collection principal, insertar directamente a la bd
-      console.log(result[pagina]);
-      padre = pagina;
-    } else if (separaCollections.length === 2) {
-    } else if (separaCollections.length >= 3) {
+      if (collectionAnterior !== pagina) {
+        //no es igual, hacer el reset de variables
+      }
+    } else {
     }
+    collectionAnterior = pagina;
   }
+  //console.log(result);
+  //console.log(typeof Object.keys(result));
+  ///console.log(Object.keys(result).length);
 
   //db.push("/" + pagina, result[pagina], false);
   //db.delete("/");
