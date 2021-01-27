@@ -1,10 +1,12 @@
 const fs = require("fs");
 const ExcelJS = require("exceljs");
 const excelToJson = require("convert-excel-to-json");
+//import { JsonDB } from "node-json-db";
+//import { Config } from "node-json-db/dist/lib/JsonDBConfig";
+const { JsonDB } = require("node-json-db");
+const { Config } = require("node-json-db/dist/lib/JsonDBConfig");
 
-let archivoRAW = fs.readFileSync(
-  __dirname + "/pruebas/bruumi-eats-data-export.json"
-);
+let archivoRAW = fs.readFileSync(__dirname + "/pruebas/isaijsonexample.json");
 let archivoJSON = JSON.parse(archivoRAW);
 const workbook = new ExcelJS.Workbook();
 workbook.creator = "IsaiT";
@@ -219,6 +221,29 @@ function jsonToExcel(
   reiniciarLevel = "no";
 }
 
-jsonToExcel(archivoJSON, "", "", 0, "", "", "no", 1);
+//jsonToExcel(archivoJSON, "", "", 0, "", "", "no", 1);
 
-workbook.xlsx.writeFile(__dirname + "/public/Generado/test.xlsx");
+//workbook.xlsx.writeFile(__dirname + "/public/Generado/test.xlsx");
+
+var db = new JsonDB(new Config("miBD", true, false, "/"));
+
+function ExcelTojson() {
+  const result = excelToJson({
+    sourceFile: __dirname + "/public/Generado/test.xlsx",
+    columnToKey: {
+      "*": "{{columnHeader}}",
+    },
+  });
+
+  for (var pagina in result) {
+    //console.log("El tipo es: " + typeof result[pagina]);
+    console.log(result[pagina]);
+    //db.push("/" + pagina, result[pagina], false);
+  }
+
+  db.delete("/");
+  var data = db.getData("/");
+  console.log(data);
+}
+
+ExcelTojson();
