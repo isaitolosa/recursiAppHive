@@ -252,7 +252,6 @@ function ExcelTojson() {
     var i = 0;
     var rutaTemp;
     var encabezados;
-    console.log("__________________");
     //console.log(objeto);
     let a, b;
     let guardaCeldaAAA;
@@ -319,16 +318,6 @@ function ExcelTojson() {
                   b = fila[individuo];
                 } else {
                   let elEncabezadoIndiv = encabezados[individuo];
-                  //console.log(fila);
-                  console.log(
-                    "_______________________________________________"
-                  );
-                  console.log(
-                    "La página es: " +
-                      pagina +
-                      ". Estamos en: " +
-                      fila[individuo]
-                  );
                   let elValor = fila[individuo];
                   let aux = '{"' + elEncabezadoIndiv + '":"' + elValor + '"}';
                   let jso = JSON.parse(aux);
@@ -379,17 +368,23 @@ function ExcelTojson() {
 
                   cadenaBuena =
                     penultimo + "/" + guardaCeldaAAA + "/" + ultimo + "/" + b;
-                  console.log(cadenaBuena);
-                  console.log(
-                    "Lo que tiene el arreglo encontrados es: " + encontrados
-                  );
+
                   let cadenaSumada = "";
                   let encontradosAux = [].concat(encontrados);
+                  encontradosAux.reverse();
 
                   while (encontradosAux.length > 0) {
-                    cadenaSumada = cadenaSumada + "/" + encontradosAux.pop();
+                    let otroAux = [].concat(encontradosAux);
+                    encontradosAux.pop();
+                    cadenaSumada =
+                      separaCollections[encontradosAux.length] +
+                      "/" +
+                      otroAux.pop() +
+                      "/" +
+                      cadenaSumada;
                   }
-                  console.log(cadenaSumada);
+                  cadenaBuena = cadenaSumada + cadenaBuena;
+                  db.push("/" + cadenaBuena, jso, false);
                 }
               }
             }
@@ -462,7 +457,6 @@ function ExcelTojson() {
         }
       }
     }
-    console.log(objetoAinsertar);
 
     if (arregloAenviar.length === 0) {
       insertaEnbd(pathAenviar, objetoAinsertar);
