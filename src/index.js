@@ -233,11 +233,18 @@ function jsonToExcel(
   reiniciarLevel = "no";
 }
 
-function ExcelTojson() {
+app.post("/api/ExcelToJson", (req, res) => {
   const result = excelToJson({
-    sourceFile: __dirname + "/public/Generado/test.xlsx",
+    sourceFile: __dirname + "/public/uploads/" + req.file.filename,
   });
+  ExcelTojson(result);
+  var data = db.getData("/");
+  db.delete("/");
+  console.log("Terminamos");
+  res.json(data);
+});
 
+function ExcelTojson(result) {
   function buscarNodo(paths, laCadena, aEncontrar) {
     for (var num in paths) {
       var llave = Object.keys(paths[num]);
@@ -275,6 +282,20 @@ function ExcelTojson() {
                 } else {
                   let elEncabezadoIndiv = encabezados[individuo];
                   let elValor = fila[individuo];
+                  if (typeof elValor === "string") {
+                    elValor = elValor.replace(
+                      /(\r\n|\n|\r|\t|[']|["]|\\|\")/gm,
+                      ""
+                    );
+                    elValor = elValor.trim();
+
+                    elEncabezadoIndiv = elEncabezadoIndiv.replace(
+                      /(\r\n|\n|\r|\t|[']|["]|\\|\")/gm,
+                      ""
+                    );
+                    elEncabezadoIndiv = elEncabezadoIndiv.trim();
+                  }
+
                   let aux =
                     '{"' +
                     a +
@@ -294,6 +315,19 @@ function ExcelTojson() {
                 } else {
                   let elEncabezadoIndiv = encabezados[individuo];
                   let elValor = fila[individuo];
+                  if (typeof elValor === "string") {
+                    elValor = elValor.replace(
+                      /(\r\n|\n|\r|\t|[']|["]|\\|\")/gm,
+                      ""
+                    );
+                    elValor = elValor.trim();
+
+                    elEncabezadoIndiv = elEncabezadoIndiv.replace(
+                      /(\r\n|\n|\r|\t|[']|["]|\\|\")/gm,
+                      ""
+                    );
+                    elEncabezadoIndiv = elEncabezadoIndiv.trim();
+                  }
                   let aux =
                     '{"' +
                     a +
@@ -318,6 +352,19 @@ function ExcelTojson() {
                 } else {
                   let elEncabezadoIndiv = encabezados[individuo];
                   let elValor = fila[individuo];
+                  if (typeof elValor === "string") {
+                    elValor = elValor.replace(
+                      /(\r\n|\n|\r|\t|[']|["]|\\|\")/gm,
+                      ""
+                    );
+                    elValor = elValor.trim();
+
+                    elEncabezadoIndiv = elEncabezadoIndiv.replace(
+                      /(\r\n|\n|\r|\t|[']|["]|\\|\")/gm,
+                      ""
+                    );
+                    elEncabezadoIndiv = elEncabezadoIndiv.trim();
+                  }
                   let aux = '{"' + elEncabezadoIndiv + '":"' + elValor + '"}';
                   let jso = JSON.parse(aux);
                   let limite = separaCollections.length - 2;
@@ -499,9 +546,7 @@ function ExcelTojson() {
     funcionRecursi([], objetoAmandar);
     objetoAmandar = [];
   }
-  var data = db.getData("/");
 }
-//ExcelTojson();
 
 //Settings
 app.set("port", 3000);
