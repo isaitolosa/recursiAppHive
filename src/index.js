@@ -238,14 +238,17 @@ function ExcelTojson() {
     var i = 0;
     var rutaTemp;
     console.log("__________________");
-    console.log(objeto);
+    //console.log(objeto);
     //console.log(path);
     for (var numero in objeto) {
-      for (var nodo in objeto[numero]) {
-        //console.log(objeto[numero][nodo]);
-        if (i === 0) {
-          i = i + 1;
-        } else {
+      for (var pagina in objeto[numero]) {
+        //console.log("El path es: " + pagina);
+        for (var linea in objeto[numero][pagina]) {
+          //console.log(objeto[numero][pagina][linea]);
+          if (i === 0) {
+            i = i + 1;
+          } else {
+          }
         }
       }
     }
@@ -305,26 +308,32 @@ function ExcelTojson() {
     }
 
     let separaCollections = pagina.split("-");
-    console.log();
+    //console.log(
+    //"Pagina: " + pagina + ", collectionAnterior: " + collectionAnterior
+    //);
     if (separaCollections.length === 1) {
       if (collectionAnterior !== pagina) {
         //no es igual, hacer el reset de variables, analizar cuando la ultima página es principal(collection)
         //1: llama la función para insertar lo que esta en el objetoAmandar
-        console.log();
         funcionRecursi("", objetoAmandar);
         //2: inserta la pagina(collection) actual a la bd
 
         //3: borrar la información que está en objetoAmandar = []
         objetoAmandar = [];
+        let cadena =
+          '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
+        let objeto = JSON.parse(cadena);
+
+        objetoAmandar.push(objeto);
       } else {
-        console.log();
         //insertar primera pagina en db
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
         let objeto = JSON.parse(cadena);
 
         objetoAmandar.push(objeto);
-        insertaEnbd(pagina, objetoAmandar);
+        //insertaEnbd(pagina, objetoAmandar);
+        funcionRecursi("", objetoAmandar);
         objetoAmandar = [];
       }
     } else {
