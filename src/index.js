@@ -1,3 +1,4 @@
+const express = require("express");
 const fs = require("fs");
 const ExcelJS = require("exceljs");
 const excelToJson = require("convert-excel-to-json");
@@ -6,6 +7,25 @@ const excelToJson = require("convert-excel-to-json");
 const { JsonDB } = require("node-json-db");
 const { Config } = require("node-json-db/dist/lib/JsonDBConfig");
 const { log } = require("console");
+const multer = require("multer");
+const path = require("path");
+
+const app = express();
+
+// -> Multer Upload Storage
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, "public/uploads"),
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
+  },
+});
+
+app.use(
+  multer({
+    storage,
+    dest: path.join(__dirname, "public/uploads"),
+  }).single("uploadfile")
+);
 
 let archivoRAW = fs.readFileSync(__dirname + "/pruebas/isaijsonexample.json");
 let archivoJSON = JSON.parse(archivoRAW);
@@ -16,6 +36,24 @@ workbook.calcProperties.fullCalcOnLoad = true;
 let sheet;
 let encabezados = [];
 var db = new JsonDB(new Config("miBD", true, false, "/"));
+
+app.post("/api/jsonToExcel", (req, res) => {
+  let archivoRAW = fs.readFileSync(
+    __dirname + "/public/uploads/" + req.file.filename
+  );
+  let archivoJSON = JSON.parse(archivoRAW);
+  jsonToExcel(archivoJSON, "", "", 0, "", "", "no", 1);
+  workbook.xlsx.writeFile(__dirname + "/public/Generado/test.xlsx");
+  var file = __dirname + "/public/generados/nuevo.xlsx";
+  var filename = path.basename(file);
+  console.log(file);
+  var mimetype =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  res.setHeader("Content-disposition", "attachment; filename=nuevo.xlsx");
+  res.setHeader("Content-type", mimetype);
+  res.contentType = "application/vnd.ms-excel";
+  res.download(file, filename);
+});
 
 function jsonToExcel(
   objeto,
@@ -191,8 +229,6 @@ function jsonToExcel(
   }
   reiniciarLevel = "no";
 }
-//jsonToExcel(archivoJSON, "", "", 0, "", "", "no", 1);
-//workbook.xlsx.writeFile(__dirname + "/public/Generado/test.xlsx");
 
 function ExcelTojson() {
   const result = excelToJson({
