@@ -42,15 +42,18 @@ app.post("/api/jsonToExcel", (req, res) => {
     __dirname + "/public/uploads/" + req.file.filename
   );
   let archivoJSON = JSON.parse(archivoRAW);
+
   jsonToExcel(archivoJSON, "", "", 0, "", "", "no", 1);
+
   workbook.xlsx.writeFile(__dirname + "/public/Generado/test.xlsx");
-  var file = __dirname + "/public/generados/nuevo.xlsx";
+
+  var file = __dirname + "/public/Generado/test.xlsx";
   var filename = path.basename(file);
   console.log(file);
   var mimetype =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   res.setHeader("Content-disposition", "attachment; filename=nuevo.xlsx");
-  res.setHeader("Content-type", mimetype);
+  //res.setHeader("Content-type", mimetype);
   res.contentType = "application/vnd.ms-excel";
   res.download(file, filename);
 });
@@ -499,3 +502,11 @@ function ExcelTojson() {
   var data = db.getData("/");
 }
 //ExcelTojson();
+
+//Settings
+app.set("port", 3000);
+
+// Create a Server
+app.listen(app.get("port"), () => {
+  console.log(`Server on port ${app.get("port")}`);
+});
