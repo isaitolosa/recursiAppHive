@@ -256,9 +256,10 @@ function ExcelTojson() {
 
   function funcionRecursi(path, getObjeto) {
     let arregloAenviar = [];
-    let pathAenviar = "";
+    let pathAenviar = [];
     let paginaAnterior = "asdf#$%&nada....";
     let objetoAinsertar = [];
+    let paginaActual = "";
 
     for (var pag in getObjeto) {
       for (var nombrePag in getObjeto[pag]) {
@@ -274,7 +275,7 @@ function ExcelTojson() {
             "}";
           let objeto = JSON.parse(cadena);
           objetoAinsertar.push(objeto);
-          pathAenviar = nombrePag;
+          paginaActual = nombrePag;
         } else {
           //console.log("No estamos vacíos");
           let cadena =
@@ -289,6 +290,28 @@ function ExcelTojson() {
       }
       paginaAnterior = nombrePag;
     }
+
+    let separaCollections = paginaActual.split("-");
+    if (separaCollections.length > 1) {
+      for (var numero in objetoAinsertar) {
+        let i = 0;
+        for (var pagina in objetoAinsertar[numero]) {
+          console.log("El path es: " + pagina);
+          for (var linea in objetoAinsertar[numero][pagina]) {
+            var linea = objetoAinsertar[numero][pagina][linea];
+            console.log(linea);
+            if (i === 0) {
+              i = i + 1;
+            } else {
+              for (var campo in linea) {
+                console.log(linea[campo]);
+              }
+            }
+          }
+        }
+      }
+    }
+    console.log(pathAenviar);
 
     if (arregloAenviar.length === 0) {
       insertaEnbd(path, objetoAinsertar);
