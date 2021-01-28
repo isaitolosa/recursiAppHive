@@ -239,6 +239,7 @@ function ExcelTojson() {
     var encabezados;
     console.log("__________________");
     //console.log(objeto);
+    let a, b;
     for (var numero in objeto) {
       for (var pagina in objeto[numero]) {
         for (var linea in objeto[numero][pagina]) {
@@ -248,13 +249,12 @@ function ExcelTojson() {
             i = i + 1;
           } else {
             //Sección para buscar los encabezados
-            let a, b;
+
             for (var individuo in fila) {
               let separaCollections = pagina.split("-");
               if (separaCollections.length === 1) {
                 if (individuo === "A") {
                   a = fila[individuo];
-                  console.log();
                 } else {
                   let elEncabezadoIndiv = encabezados[individuo];
                   let elValor = fila[individuo];
@@ -266,15 +266,46 @@ function ExcelTojson() {
                     '":"' +
                     elValor +
                     '"}}';
-                  let js = JSON.parse(aux);
-                  db.push("/" + pagina, js, false);
+                  let jso = JSON.parse(aux);
+                  db.push("/" + pagina, jso, false);
+                }
+              } else if (separaCollections.length === 2) {
+                if (individuo === "A") {
+                  a = fila[individuo];
+                } else if (individuo === "B") {
+                  b = fila[individuo];
+                } else {
+                  let elEncabezadoIndiv = encabezados[individuo];
+                  let elValor = fila[individuo];
+                  let aux =
+                    '{"' +
+                    a +
+                    '":{"' +
+                    separaCollections[1] +
+                    '":{"' +
+                    b +
+                    '":{"' +
+                    elEncabezadoIndiv +
+                    '":"' +
+                    elValor +
+                    '"}}}}';
+                  let jso = JSON.parse(aux);
+                  db.push("/" + separaCollections[0], jso, false);
                 }
               } else {
                 if (individuo === "A") {
-                  a = encabezados[individuo];
+                  a = fila[individuo];
                 } else if (individuo === "B") {
-                  b = encabezados[individuo];
+                  b = fila[individuo];
                 } else {
+                  let elEncabezadoIndiv = encabezados[individuo];
+                  let elValor = fila[individuo];
+                  let aux = '{"' + elEncabezadoIndiv + '":"' + elValor + '"}';
+                  let jso = JSON.parse(aux);
+                  console.log(separaCollections);
+                  console.log(pagina);
+                  console.log(path);
+                  console.log();
                 }
               }
             }
@@ -306,7 +337,6 @@ function ExcelTojson() {
           objetoAinsertar.push(objeto);
           paginaActual = nombrePag;
         } else {
-          //console.log("No estamos vacíos");
           let cadena =
             '{"' +
             nombrePag +
@@ -347,12 +377,13 @@ function ExcelTojson() {
         }
       }
     }
+    console.log(objetoAinsertar);
 
     if (arregloAenviar.length === 0) {
       insertaEnbd(pathAenviar, objetoAinsertar);
     } else {
-      funcionRecursi(pathAenviar, arregloAenviar);
       insertaEnbd(pathAenviar, objetoAinsertar);
+      funcionRecursi(pathAenviar, arregloAenviar);
     }
   }
 
@@ -425,3 +456,4 @@ function ExcelTojson() {
 }
 
 ExcelTojson();
+//db.push("/arraytest/myarray", { id: 65464646155, name: "test" }, true);
