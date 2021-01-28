@@ -238,25 +238,39 @@ function ExcelTojson() {
   }
 
   function funcionRecursi(path, getObjeto) {
-    let arreglo = [];
+    let arregloAenviar = [];
+    let pathAenviar = "";
     let paginaAnterior = "asdf#$%&nada....";
+    let objetoAinsertar = [];
 
     for (var pag in getObjeto) {
       for (var nombrePag in getObjeto[pag]) {
-        //console.log(getObjeto[pag][nombrePag]);
         console.log(nombrePag);
-        console.log("if(" + paginaAnterior + " está en " + nombrePag + ")");
-        console.log(nombrePag.search(paginaAnterior));
-        if (paginaAnterior === "asdf#$%&nada....") {
-          arreglo.push(getObjeto[pag][nombrePag]);
-        } else if (nombrePag.search(paginaAnterior) !== -1) {
-          arreglo.push(getObjeto[pag][nombrePag]);
+        console.log(getObjeto[pag][nombrePag]);
+        if (objetoAinsertar.length === 0) {
+          console.log("Esta vacio");
+          let cadena =
+            '{"' +
+            nombrePag +
+            '":' +
+            JSON.stringify(getObjeto[pag][nombrePag]) +
+            "}";
+          let objeto = JSON.parse(cadena);
+          objetoAinsertar.push(objeto);
+          pathAenviar = nombrePag;
         } else {
-          console.log();
+          console.log("No estamos vacíos");
+          let cadena =
+            '{"' +
+            nombrePag +
+            '":' +
+            JSON.stringify(getObjeto[pag][nombrePag]) +
+            "}";
+          let objeto = JSON.parse(cadena);
+          arregloAenviar.push(objeto);
         }
       }
       paginaAnterior = nombrePag;
-      console.log();
     }
   }
 
@@ -286,13 +300,14 @@ function ExcelTojson() {
     } else {
       //console.log(pagina + ":{" + result[pagina] + "}");
       console.log();
-      if (pagina.search(collectionAnterior)) {
+      if (pagina.search(collectionAnterior) !== -1) {
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
         let objeto = JSON.parse(cadena);
         objetoAmandar.push(objeto);
       } else {
         funcionRecursi("", objetoAmandar);
+        console.log();
         objetoAmandar = [];
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
