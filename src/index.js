@@ -243,14 +243,16 @@ function ExcelTojson() {
 
     for (var pag in getObjeto) {
       for (var nombrePag in getObjeto[pag]) {
-        console.log(nombrePag.search(paginaAnterior));
         //console.log(getObjeto[pag][nombrePag]);
         console.log(nombrePag);
+        console.log("if(" + paginaAnterior + " está en " + nombrePag + ")");
+        console.log(nombrePag.search(paginaAnterior));
         if (paginaAnterior === "asdf#$%&nada....") {
           arreglo.push(getObjeto[pag][nombrePag]);
-        } else if (nombrePag.search(paginaAnterior)) {
+        } else if (nombrePag.search(paginaAnterior) !== -1) {
           arreglo.push(getObjeto[pag][nombrePag]);
         } else {
+          console.log();
         }
       }
       paginaAnterior = nombrePag;
@@ -283,11 +285,22 @@ function ExcelTojson() {
       }
     } else {
       //console.log(pagina + ":{" + result[pagina] + "}");
-      let paraVer = result[pagina];
+      console.log();
+      if (pagina.search(collectionAnterior)) {
+        let cadena =
+          '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
+        let objeto = JSON.parse(cadena);
+        objetoAmandar.push(objeto);
+      } else {
+        funcionRecursi("", objetoAmandar);
+        objetoAmandar = [];
+        let cadena =
+          '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
+        let objeto = JSON.parse(cadena);
+        objetoAmandar.push(objeto);
+      }
       //console.log();
-      let cadena = '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
-      let objeto = JSON.parse(cadena);
-      objetoAmandar.push(objeto);
+
       //console.log(objetoAmandar);
     }
     collectionAnterior = pagina;
