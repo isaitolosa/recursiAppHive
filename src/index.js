@@ -5,6 +5,7 @@ const excelToJson = require("convert-excel-to-json");
 //import { Config } from "node-json-db/dist/lib/JsonDBConfig";
 const { JsonDB } = require("node-json-db");
 const { Config } = require("node-json-db/dist/lib/JsonDBConfig");
+const { log } = require("console");
 
 let archivoRAW = fs.readFileSync(__dirname + "/pruebas/isaijsonexample.json");
 let archivoJSON = JSON.parse(archivoRAW);
@@ -233,21 +234,50 @@ function ExcelTojson() {
   });
 
   function insertaEnbd(path, objeto) {
-    //console.log("Objeto a insertar: ");
-
     var i = 0;
     var rutaTemp;
+    var encabezados;
     console.log("__________________");
     //console.log(objeto);
-    console.log(path);
     for (var numero in objeto) {
       for (var pagina in objeto[numero]) {
-        //console.log("El path es: " + pagina);
         for (var linea in objeto[numero][pagina]) {
-          //console.log(objeto[numero][pagina][linea]);
+          var fila = objeto[numero][pagina][linea];
           if (i === 0) {
+            encabezados = objeto[numero][pagina][linea];
             i = i + 1;
           } else {
+            //Sección para buscar los encabezados
+            let a, b;
+            for (var individuo in fila) {
+              let separaCollections = pagina.split("-");
+              if (separaCollections.length === 1) {
+                if (individuo === "A") {
+                  a = fila[individuo];
+                  console.log();
+                } else {
+                  let elEncabezadoIndiv = encabezados[individuo];
+                  let elValor = fila[individuo];
+                  let aux =
+                    '{"' +
+                    a +
+                    '":{"' +
+                    elEncabezadoIndiv +
+                    '":"' +
+                    elValor +
+                    '"}}';
+                  let js = JSON.parse(aux);
+                  db.push("/" + pagina, js, false);
+                }
+              } else {
+                if (individuo === "A") {
+                  a = encabezados[individuo];
+                } else if (individuo === "B") {
+                  b = encabezados[individuo];
+                } else {
+                }
+              }
+            }
           }
         }
       }
@@ -326,7 +356,6 @@ function ExcelTojson() {
     }
   }
 
-  //____________________________________________________________________________
   let collectionAnterior = "";
   let objetoAmandar = [];
   for (var pagina in result) {
@@ -385,23 +414,14 @@ function ExcelTojson() {
     }
     collectionAnterior = pagina;
   }
-
   //Checamos si el objetoAmandar no esta vacío, llamar a la funcion una ultima vez
   if (Object.keys(objetoAmandar).length !== 0) {
     funcionRecursi([], objetoAmandar);
     objetoAmandar = [];
   }
-
-  //__________________________________________________________________________
-
-  //console.log(result);
-  //console.log(typeof Object.keys(result));
-  ///console.log(Object.keys(result).length);
-
   //db.push("/" + pagina, result[pagina], false);
   //db.delete("/");
   var data = db.getData("/");
-  //console.log(data);
 }
 
 ExcelTojson();
