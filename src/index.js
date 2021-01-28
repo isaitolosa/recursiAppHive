@@ -233,6 +233,21 @@ function ExcelTojson() {
     sourceFile: __dirname + "/public/Generado/test.xlsx",
   });
 
+  function buscarNodo(paths, laCadena, aEncontrar) {
+    //console.log(paths);
+    for (var num in paths) {
+      var llave = Object.keys(paths[num]);
+      if (llave.toString() === laCadena) {
+        var valores = JSON.parse(Object.values(paths[num]));
+        //console.log(typeof Object.keys(valores).toString());
+        //console.log(aEncontrar);
+        if (aEncontrar === Object.keys(valores).toString()) {
+          return Object.values(valores).toString();
+        }
+      }
+    }
+  }
+
   function insertaEnbd(path, objeto) {
     var i = 0;
     var rutaTemp;
@@ -240,6 +255,10 @@ function ExcelTojson() {
     console.log("__________________");
     //console.log(objeto);
     let a, b;
+    let guardaCeldaAAA;
+    let encontrados = [];
+    let cadenaBuena;
+
     for (var numero in objeto) {
       for (var pagina in objeto[numero]) {
         for (var linea in objeto[numero][pagina]) {
@@ -295,20 +314,86 @@ function ExcelTojson() {
               } else {
                 if (individuo === "A") {
                   a = fila[individuo];
+                  guardaCeldaAAA = a;
                 } else if (individuo === "B") {
                   b = fila[individuo];
                 } else {
                   let elEncabezadoIndiv = encabezados[individuo];
+                  //console.log(fila);
+                  console.log(
+                    "_______________________________________________"
+                  );
+                  console.log(
+                    "La página es: " +
+                      pagina +
+                      ". Estamos en: " +
+                      fila[individuo]
+                  );
                   let elValor = fila[individuo];
                   let aux = '{"' + elEncabezadoIndiv + '":"' + elValor + '"}';
                   let jso = JSON.parse(aux);
-                  console.log(separaCollections);
-                  console.log(pagina);
-                  console.log(path);
-                  console.log();
+                  let limite = separaCollections.length - 2;
+                  let cadenaBuena = "";
+                  let otroLimit = 1;
+                  for (
+                    let index = limite;
+                    index < separaCollections.length;
+                    index++
+                  ) {
+                    let buscarEnPagina = [];
+                    //Los dos for sirven para convertir y concatenar el obj en un string
+                    for (
+                      let z = 0;
+                      z < separaCollections.length - otroLimit;
+                      z++
+                    ) {
+                      buscarEnPagina.push(separaCollections[z]);
+                    }
+                    let laCadena;
+                    for (let l = 0; l < buscarEnPagina.length; l++) {
+                      if (l === 0) {
+                        laCadena = buscarEnPagina[l];
+                      } else {
+                        laCadena = laCadena + "-" + buscarEnPagina[l];
+                      }
+                    }
+                    ////////////////////////////////////////////////////////////
+
+                    //console.log(laCadena);
+                    if (buscarEnPagina.length === 1) {
+                    } else {
+                      let aux2 = buscarNodo(path, laCadena, a);
+                      //console.log(aux2);
+                      if (!(aux2 === undefined)) {
+                        encontrados.push(aux2);
+                        a = aux2;
+                      }
+                    }
+
+                    otroLimit++;
+                  }
+                  //Aqui procedemos a insertar
+                  let penultimo =
+                    separaCollections[separaCollections.length - 2];
+                  let ultimo = separaCollections[separaCollections.length - 1];
+
+                  cadenaBuena =
+                    penultimo + "/" + guardaCeldaAAA + "/" + ultimo + "/" + b;
+                  console.log(cadenaBuena);
+                  console.log(
+                    "Lo que tiene el arreglo encontrados es: " + encontrados
+                  );
+                  let cadenaSumada = "";
+                  let encontradosAux = [].concat(encontrados);
+
+                  while (encontradosAux.length > 0) {
+                    cadenaSumada = cadenaSumada + "/" + encontradosAux.pop();
+                  }
+                  console.log(cadenaSumada);
                 }
               }
             }
+            encontrados = [];
           }
         }
       }
