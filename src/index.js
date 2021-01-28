@@ -233,8 +233,9 @@ function ExcelTojson() {
   });
 
   function insertaEnbd(path, objeto) {
-    //console.log(path);
-    //console.log(objeto);
+    console.log("Objeto a insertar: ");
+    console.log(objeto);
+    console.log("__________________");
   }
 
   function funcionRecursi(path, getObjeto) {
@@ -245,10 +246,10 @@ function ExcelTojson() {
 
     for (var pag in getObjeto) {
       for (var nombrePag in getObjeto[pag]) {
-        console.log(nombrePag);
-        console.log(getObjeto[pag][nombrePag]);
+        //console.log(nombrePag);
+        //console.log(getObjeto[pag][nombrePag]);
         if (objetoAinsertar.length === 0) {
-          console.log("Esta vacio");
+          //console.log("Esta vacio");
           let cadena =
             '{"' +
             nombrePag +
@@ -259,7 +260,7 @@ function ExcelTojson() {
           objetoAinsertar.push(objeto);
           pathAenviar = nombrePag;
         } else {
-          console.log("No estamos vacíos");
+          //console.log("No estamos vacíos");
           let cadena =
             '{"' +
             nombrePag +
@@ -271,6 +272,13 @@ function ExcelTojson() {
         }
       }
       paginaAnterior = nombrePag;
+    }
+
+    if (arregloAenviar.length === 0) {
+      insertaEnbd(path, objetoAinsertar);
+    } else {
+      funcionRecursi(pathAenviar, arregloAenviar);
+      insertaEnbd(path, objetoAinsertar);
     }
   }
 
@@ -290,16 +298,21 @@ function ExcelTojson() {
         //1: llama la función para insertar lo que esta en el objetoAmandar
         funcionRecursi("", objetoAmandar);
         //2: inserta la pagina(collection) actual a la bd
-        insertaEnbd(pagina, result[pagina]);
+        let cadena =
+          '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
+        let objeto = JSON.parse(cadena);
+        insertaEnbd(pagina, objeto);
         //3: borrar la información que está en objetoAmandar = []
         objetoAmandar = [];
       } else {
         //insertar primera pagina en db
-        insertaEnbd(pagina, result[pagina]);
+        let cadena =
+          '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
+        let objeto = JSON.parse(cadena);
+        insertaEnbd(pagina, objeto);
       }
     } else {
       //console.log(pagina + ":{" + result[pagina] + "}");
-      console.log();
       if (pagina.search(collectionAnterior) !== -1) {
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
@@ -307,7 +320,6 @@ function ExcelTojson() {
         objetoAmandar.push(objeto);
       } else {
         funcionRecursi("", objetoAmandar);
-        console.log();
         objetoAmandar = [];
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
