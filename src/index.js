@@ -233,9 +233,22 @@ function ExcelTojson() {
   });
 
   function insertaEnbd(path, objeto) {
-    console.log("Objeto a insertar: ");
-    console.log(objeto);
+    //console.log("Objeto a insertar: ");
+
+    var i = 0;
+    var rutaTemp;
     console.log("__________________");
+    console.log(objeto);
+    //console.log(path);
+    for (var numero in objeto) {
+      for (var nodo in objeto[numero]) {
+        //console.log(objeto[numero][nodo]);
+        if (i === 0) {
+          i = i + 1;
+        } else {
+        }
+      }
+    }
   }
 
   function funcionRecursi(path, getObjeto) {
@@ -292,24 +305,27 @@ function ExcelTojson() {
     }
 
     let separaCollections = pagina.split("-");
+    console.log();
     if (separaCollections.length === 1) {
       if (collectionAnterior !== pagina) {
         //no es igual, hacer el reset de variables, analizar cuando la ultima página es principal(collection)
         //1: llama la función para insertar lo que esta en el objetoAmandar
+        console.log();
         funcionRecursi("", objetoAmandar);
         //2: inserta la pagina(collection) actual a la bd
-        let cadena =
-          '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
-        let objeto = JSON.parse(cadena);
-        insertaEnbd(pagina, objeto);
+
         //3: borrar la información que está en objetoAmandar = []
         objetoAmandar = [];
       } else {
+        console.log();
         //insertar primera pagina en db
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
         let objeto = JSON.parse(cadena);
-        insertaEnbd(pagina, objeto);
+
+        objetoAmandar.push(objeto);
+        insertaEnbd(pagina, objetoAmandar);
+        objetoAmandar = [];
       }
     } else {
       //console.log(pagina + ":{" + result[pagina] + "}");
