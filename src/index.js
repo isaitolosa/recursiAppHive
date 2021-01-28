@@ -15,6 +15,7 @@ workbook.created = new Date();
 workbook.calcProperties.fullCalcOnLoad = true;
 let sheet;
 let encabezados = [];
+var db = new JsonDB(new Config("miBD", true, false, "/"));
 
 function jsonToExcel(
   objeto,
@@ -46,14 +47,10 @@ function jsonToExcel(
   for (var collection in objeto) {
     if (typeof objeto[collection] !== "object") {
       sheet = workbook.getWorksheet(abuelo);
-
-      //sheet.addRow([3, "Sam", new Date()]);
-
       let esPrinOsec = abuelo.search("-");
       if (esPrinOsec === -1) {
         //Es hoja principal
         let fila = sheet.getRow(1);
-
         let celda;
         encabezados = fila.values;
         fila = sheet.getRow(1);
@@ -65,14 +62,9 @@ function jsonToExcel(
             encabezados.push(collection);
           }
         }
-
         fila.values = encabezados;
         fila = sheet.getRow(1);
-
-        //console.log(fila.values);
-
         //Buscar nombre de columna en la fila y sacar su posicion
-
         let numeroCol;
         fila.eachCell(function (cel, rowNum) {
           if (cel.text === collection) {
@@ -80,15 +72,12 @@ function jsonToExcel(
           }
         });
         fila = sheet.getRow(1);
-
         let last = sheet.getColumn(1);
         let ultimaFila;
         last.eachCell(function (cel, rowNum) {
           ultimaFila = rowNum;
         });
-
         let filaTemp;
-
         if (ultimaFila === 1) {
           ultimaFila = ultimaFila + 1;
           filaTemp = sheet.getRow(ultimaFila).values;
@@ -99,26 +88,19 @@ function jsonToExcel(
         } else if (filaTemp !== padre) {
           ultimaFila = ultimaFila + 1;
         }
-
         fila = sheet.getRow(1);
         //Insertar id
         cell = sheet.getCell(ultimaFila, 1);
         cell.value = padre;
-
         fila = sheet.getRow(1);
         //Insertar celda
         cell = sheet.getCell(ultimaFila, numeroCol);
         cell.value = objeto[collection];
-
         fila = sheet.getRow(1);
-
-        fila = sheet.getRow(1);
-
         cell = null;
       } else {
         //Es hoja anidada
         let fila = sheet.getRow(1);
-
         let celda;
         encabezados = fila.values;
         fila = sheet.getRow(1);
@@ -131,12 +113,9 @@ function jsonToExcel(
             encabezados.push(collection);
           }
         }
-
         fila.values = encabezados;
         fila = sheet.getRow(1);
-
         //Buscar nombre de columna en la fila y sacar su posicion
-
         let numeroCol;
         fila.eachCell(function (cel, rowNum) {
           if (cel.text === collection) {
@@ -144,15 +123,12 @@ function jsonToExcel(
           }
         });
         fila = sheet.getRow(1);
-
         let last = sheet.getColumn(1);
         let ultimaFila;
         last.eachCell(function (cel, rowNum) {
           ultimaFila = rowNum;
         });
-
         let filaTemp;
-
         if (ultimaFila === 1) {
           ultimaFila = ultimaFila + 1;
           filaTemp = sheet.getRow(ultimaFila).values;
@@ -163,23 +139,17 @@ function jsonToExcel(
         } else if (filaTemp !== padre) {
           ultimaFila = ultimaFila + 1;
         }
-
         fila = sheet.getRow(1);
         //Insertar ids
         cell = sheet.getCell(ultimaFila, 1);
         cell.value = bisAbuelo;
         cell = sheet.getCell(ultimaFila, 2);
         cell.value = padre;
-
         fila = sheet.getRow(1);
         //Insertar celda
         cell = sheet.getCell(ultimaFila, numeroCol);
         cell.value = objeto[collection];
-
         fila = sheet.getRow(1);
-
-        fila = sheet.getRow(1);
-
         cell = null;
       }
     } else {
@@ -221,12 +191,8 @@ function jsonToExcel(
   }
   reiniciarLevel = "no";
 }
-
 //jsonToExcel(archivoJSON, "", "", 0, "", "", "no", 1);
-
 //workbook.xlsx.writeFile(__dirname + "/public/Generado/test.xlsx");
-
-var db = new JsonDB(new Config("miBD", true, false, "/"));
 
 function ExcelTojson() {
   const result = excelToJson({
@@ -234,13 +200,10 @@ function ExcelTojson() {
   });
 
   function buscarNodo(paths, laCadena, aEncontrar) {
-    //console.log(paths);
     for (var num in paths) {
       var llave = Object.keys(paths[num]);
       if (llave.toString() === laCadena) {
         var valores = JSON.parse(Object.values(paths[num]));
-        //console.log(typeof Object.keys(valores).toString());
-        //console.log(aEncontrar);
         if (aEncontrar === Object.keys(valores).toString()) {
           return Object.values(valores).toString();
         }
@@ -252,12 +215,10 @@ function ExcelTojson() {
     var i = 0;
     var rutaTemp;
     var encabezados;
-    //console.log(objeto);
     let a, b;
     let guardaCeldaAAA;
     let encontrados = [];
     let cadenaBuena;
-
     for (var numero in objeto) {
       for (var pagina in objeto[numero]) {
         for (var linea in objeto[numero][pagina]) {
@@ -267,7 +228,6 @@ function ExcelTojson() {
             i = i + 1;
           } else {
             //Sección para buscar los encabezados
-
             for (var individuo in fila) {
               let separaCollections = pagina.split("-");
               if (separaCollections.length === 1) {
@@ -346,33 +306,25 @@ function ExcelTojson() {
                         laCadena = laCadena + "-" + buscarEnPagina[l];
                       }
                     }
-                    ////////////////////////////////////////////////////////////
-
-                    //console.log(laCadena);
                     if (buscarEnPagina.length === 1) {
                     } else {
                       let aux2 = buscarNodo(path, laCadena, a);
-                      //console.log(aux2);
                       if (!(aux2 === undefined)) {
                         encontrados.push(aux2);
                         a = aux2;
                       }
                     }
-
                     otroLimit++;
                   }
                   //Aqui procedemos a insertar
                   let penultimo =
                     separaCollections[separaCollections.length - 2];
                   let ultimo = separaCollections[separaCollections.length - 1];
-
                   cadenaBuena =
                     penultimo + "/" + guardaCeldaAAA + "/" + ultimo + "/" + b;
-
                   let cadenaSumada = "";
                   let encontradosAux = [].concat(encontrados);
                   encontradosAux.reverse();
-
                   while (encontradosAux.length > 0) {
                     let otroAux = [].concat(encontradosAux);
                     encontradosAux.pop();
@@ -400,13 +352,9 @@ function ExcelTojson() {
     let paginaAnterior = "asdf#$%&nada....";
     let objetoAinsertar = [];
     let paginaActual = "";
-
     for (var pag in getObjeto) {
       for (var nombrePag in getObjeto[pag]) {
-        //console.log(nombrePag);
-        //console.log(getObjeto[pag][nombrePag]);
         if (objetoAinsertar.length === 0) {
-          //console.log("Esta vacio");
           let cadena =
             '{"' +
             nombrePag +
@@ -436,11 +384,8 @@ function ExcelTojson() {
         let i = 0;
         let x = 1;
         for (var pagina in objetoAinsertar[numero]) {
-          //console.log("El path es: " + pagina);
           for (var linea in objetoAinsertar[numero][pagina]) {
             var linea = objetoAinsertar[numero][pagina][linea];
-            //console.log(linea);
-            //console.log(Object.keys(linea).length);
             if (i === 0) {
               i = i + 1;
             } else {
@@ -457,7 +402,6 @@ function ExcelTojson() {
         }
       }
     }
-
     if (arregloAenviar.length === 0) {
       insertaEnbd(pathAenviar, objetoAinsertar);
     } else {
@@ -473,38 +417,28 @@ function ExcelTojson() {
     if (collectionAnterior === "") {
       collectionAnterior = pagina;
     }
-
     let separaCollections = pagina.split("-");
-    //console.log(
-    //"Pagina: " + pagina + ", collectionAnterior: " + collectionAnterior
-    //);
     if (separaCollections.length === 1) {
       if (collectionAnterior !== pagina) {
         //no es igual, hacer el reset de variables, analizar cuando la ultima página es principal(collection)
         //1: llama la función para insertar lo que esta en el objetoAmandar
         funcionRecursi([], objetoAmandar);
-        //2: inserta la pagina(collection) actual a la bd
-
         //3: borrar la información que está en objetoAmandar = []
         objetoAmandar = [];
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
         let objeto = JSON.parse(cadena);
-
         objetoAmandar.push(objeto);
       } else {
         //insertar primera pagina en db
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
         let objeto = JSON.parse(cadena);
-
         objetoAmandar.push(objeto);
-        //insertaEnbd(pagina, objetoAmandar);
         funcionRecursi([], objetoAmandar);
         objetoAmandar = [];
       }
     } else {
-      //console.log(pagina + ":{" + result[pagina] + "}");
       if (pagina.search(collectionAnterior) !== -1) {
         let cadena =
           '{"' + pagina + '":' + JSON.stringify(result[pagina]) + "}";
@@ -518,9 +452,6 @@ function ExcelTojson() {
         let objeto = JSON.parse(cadena);
         objetoAmandar.push(objeto);
       }
-      //console.log();
-
-      //console.log(objetoAmandar);
     }
     collectionAnterior = pagina;
   }
@@ -529,10 +460,6 @@ function ExcelTojson() {
     funcionRecursi([], objetoAmandar);
     objetoAmandar = [];
   }
-  //db.push("/" + pagina, result[pagina], false);
-  //db.delete("/");
   var data = db.getData("/");
 }
-
-ExcelTojson();
-//db.push("/arraytest/myarray", { id: 65464646155, name: "test" }, true);
+//ExcelTojson();
