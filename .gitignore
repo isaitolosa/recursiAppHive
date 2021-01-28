@@ -121,3 +121,4 @@ src/pruebas
 src/.gitignore
 src/miBD.json
 .gitignore
+src/public

@@ -35,7 +35,7 @@ workbook.created = new Date();
 workbook.calcProperties.fullCalcOnLoad = true;
 let sheet;
 let encabezados = [];
-var db = new JsonDB(new Config("miBD", true, false, "/"));
+var db = new JsonDB(new Config("miBD", false, false, "/"));
 
 app.post("/api/jsonToExcel", (req, res) => {
   let archivoRAW = fs.readFileSync(
@@ -55,6 +55,7 @@ app.post("/api/jsonToExcel", (req, res) => {
   res.setHeader("Content-disposition", "attachment; filename=nuevo.xlsx");
   //res.setHeader("Content-type", mimetype);
   res.contentType = "application/vnd.ms-excel";
+  console.log("Terminamos jsonToExcel");
   res.download(file, filename);
 });
 
@@ -237,10 +238,12 @@ app.post("/api/ExcelToJson", (req, res) => {
   const result = excelToJson({
     sourceFile: __dirname + "/public/uploads/" + req.file.filename,
   });
+  db.delete("/");
   ExcelTojson(result);
+  db.save();
   var data = db.getData("/");
   db.delete("/");
-  console.log("Terminamos");
+  console.log("Terminamos ExcelToJson");
   res.json(data);
 });
 
@@ -492,7 +495,13 @@ function ExcelTojson(result) {
       insertaEnbd(pathAenviar, objetoAinsertar);
     } else {
       insertaEnbd(pathAenviar, objetoAinsertar);
-      funcionRecursi(pathAenviar, arregloAenviar);
+      for (var chido in arregloAenviar) {
+        insertaEnbd(
+          pathAenviar,
+          JSON.parse("[" + JSON.stringify(arregloAenviar[chido]) + "]")
+        );
+      }
+      //funcionRecursi(pathAenviar, arregloAenviar);
     }
   }
 
